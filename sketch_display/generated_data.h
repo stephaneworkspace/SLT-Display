@@ -13,4 +13,14 @@
 // Tableau généré automatiquement à partir du fichier data.txt
 const int percentages[] = {0, 25, 50, 100, 0, 100, 0, 55, 0, 70, 0, 95, 0, 30, 0, 75};
 
+void convertSizeToCharArray(int size, char result[2]) {
+    // Vérifier que la taille est un nombre à deux chiffres
+    if (size >= 10 && size <= 99) {
+        // Extraire le premier chiffre et le convertir en caractère
+        result[0] = (size / 10) + '0';  // Convertir le chiffre en caractère ASCII
+        // Extraire le deuxième chiffre et le convertir en caractère
+        result[1] = (size % 10) + '0';  // Convertir le chiffre en caractère ASCII
+    }
+}
+
 #endif // GENERATED_DATA_H

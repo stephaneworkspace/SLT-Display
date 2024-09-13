@@ -59,6 +59,15 @@ void setup() {
     }
   }
 
+  /*// Dessiner chaque pixel de la matrice
+  for (uint8_t y = 0; y < SCREEN_HEIGHT; y++) {
+    for (uint8_t x = 0; x < SCREEN_WIDTH; x++) {
+      if (pgm_read_byte(&(pixelData[y][x])) == 1) {
+        display.drawPixel(x, y, SSD1306_WHITE);
+      }
+    }
+  }*/
+
   // Display sprites
   displaySprite(0, 'B');
   displaySprite(1, 'A');
@@ -83,18 +92,10 @@ void setup() {
   displaySprite(20, '1', 3);
   displaySprite(21, '6', 3);
   displaySprite(22, '/', 3);
-  displaySprite(23, '1', 3);
-  displaySprite(24, '6', 3);
-
-  // Dessiner chaque pixel de la matrice
-  for (uint8_t y = 0; y < SCREEN_HEIGHT; y++) {
-    for (uint8_t x = 0; x < SCREEN_WIDTH; x++) {
-      if (pgm_read_byte(&(pixelData[y][x])) == 1) {
-        display.drawPixel(x, y, SSD1306_WHITE);
-      }
-    }
-  }
-
+  char sizeArray[2];
+  convertSizeToCharArray(sizeof(percentages) / sizeof(percentages[0]), sizeArray);
+  displaySprite(23, sizeArray[0], 3);
+  displaySprite(24, sizeArray[1], 3);
 
   display.display(); // Affiche tout
 }
