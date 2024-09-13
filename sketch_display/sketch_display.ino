@@ -162,6 +162,12 @@ const uint8_t spriteE[SPRITE_HEIGHT][SPRITE_WIDTH] PROGMEM = {
   {1, 1, 1},
 };
 
+// Tableau de correspondance entre les caractères et les sprites
+const uint8_t* sprites[] = {sprite0[0], sprite1[0], sprite2[0], sprite3[0], sprite4[0], sprite5[0], sprite6[0], sprite7[0], sprite8[0], sprite9[0], spriteB[0], spriteA[0], spriteN[0], spriteK[0], spriteP[0], spriteT[0], spriteE[0]};
+
+const char spriteChars[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'A', 'N', 'K', 'P', 'T', 'E'};
+
+
 const uint8_t pixelData[64][128] PROGMEM = {
   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -224,94 +230,23 @@ void setup() {
 }
 
 void displaySprite(uint8_t position, char spriteChar) {
-  for (uint8_t y = 0; y < SPRITE_HEIGHT; y++) {
-    for (uint8_t x = 0; x < SPRITE_WIDTH; x++) {
-      switch(spriteChar) {
-        case '0':
-          if (pgm_read_byte(&(sprite0[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;
-        case '1':
-          if (pgm_read_byte(&(sprite1[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;   
-        case '2':
-          if (pgm_read_byte(&(sprite2[y][x])) == 2) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;
-        case '3':
-          if (pgm_read_byte(&(sprite3[y][x])) == 3) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;
-        case '4':
-          if (pgm_read_byte(&(sprite4[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;
-        case '5':
-          if (pgm_read_byte(&(sprite5[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;   
-        case '6':
-          if (pgm_read_byte(&(sprite6[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;
-        case '7':
-          if (pgm_read_byte(&(sprite7[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;
-        case '8':
-          if (pgm_read_byte(&(sprite8[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;
-        case '9':
-          if (pgm_read_byte(&(sprite9[y][x])) == 3) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;
-        case 'B':
-          if (pgm_read_byte(&(spriteB[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;
-        case 'A':
-          if (pgm_read_byte(&(spriteA[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;   
-        case 'N':
-          if (pgm_read_byte(&(spriteN[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;
-        case 'K':
-          if (pgm_read_byte(&(spriteK[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;  
-        case 'P':
-          if (pgm_read_byte(&(spriteP[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;  
-        case 'T':
-          if (pgm_read_byte(&(spriteT[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;  
-        case 'E':
-          if (pgm_read_byte(&(spriteE[y][x])) == 1) {
-            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
-          }
-          break;  
+  const uint8_t* selectedSprite = nullptr;
+
+  // Trouver le sprite correspondant au caractère
+  for (uint8_t i = 0; i < sizeof(spriteChars); i++) {
+    if (spriteChars[i] == spriteChar) {
+      selectedSprite = sprites[i];
+      break;
+    }
+  }
+
+  // Si le sprite est trouvé, afficher
+  if (selectedSprite) {
+    for (uint8_t y = 0; y < SPRITE_HEIGHT; y++) {
+      for (uint8_t x = 0; x < SPRITE_WIDTH; x++) {
+        if (pgm_read_byte(&(selectedSprite[y * SPRITE_WIDTH + x])) == 1) {
+          display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
+        }
       }
     }
   }
