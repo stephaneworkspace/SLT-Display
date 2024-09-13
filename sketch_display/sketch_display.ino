@@ -11,11 +11,11 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 
-const uint8_t pixelData[64][128] PROGMEM = {
+/*const uint8_t pixelData[64][128] PROGMEM = {
   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
   // Ajoute les autres lignes ici
-};
+};*/
 
 void displaySprite(uint8_t position, char spriteChar, uint8_t offset = 0) {
   const uint8_t* selectedSprite = nullptr;
@@ -42,20 +42,13 @@ void displaySprite(uint8_t position, char spriteChar, uint8_t offset = 0) {
 
 void drawSeq(uint8_t pos) {
   int seqSize = sizeof(percentages) / sizeof(percentages[0]);
-  uint8_t display_width_max = 3 - SCREEN_WIDTH -4; 
-  uint8_t display_height_max = 3 - SCREEN_HEIGHT - SPRITE_HEIGHT - 5;
+  uint8_t display_width_max = SCREEN_WIDTH - 4 - 3; 
+  uint8_t display_height_max = SCREEN_HEIGHT - SPRITE_HEIGHT - 5 - 3;
   uint8_t divided = display_width_max / seqSize;
-  uint8_t height = 10;
-  if (pos == 1) {
-    height = 10;
-  } else if (pos == 2) {
-    height = 20;
-  } else {
-    height = 40;
-  }
+  int height = display_height_max - (percentages[pos] * display_height_max) / 100;
   uint8_t posDivided = (pos * divided);
   // Horizontal line
-  display.drawLine(SPACING + posDivided, height, SPACING + divided + pos, height, SSD1306_WHITE);
+  display.drawLine(SPACING + posDivided, SPACING + height, SPACING + posDivided + divided + pos, SPACING + height, SSD1306_WHITE);
 }
 
 void setup() {
