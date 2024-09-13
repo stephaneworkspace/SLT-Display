@@ -5,7 +5,7 @@
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-
+#define SPACING 3
 #define OLED_RESET -1
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -40,6 +40,24 @@ void displaySprite(uint8_t position, char spriteChar, uint8_t offset = 0) {
   }
 }
 
+void drawSeq(uint8_t pos) {
+  int seqSize = sizeof(percentages) / sizeof(percentages[0]);
+  uint8_t display_width_max = 3 - SCREEN_WIDTH -4; 
+  uint8_t display_height_max = 3 - SCREEN_HEIGHT - SPRITE_HEIGHT - 5;
+  uint8_t divided = display_width_max / seqSize;
+  uint8_t height = 10;
+  if (pos == 1) {
+    height = 10;
+  } else if (pos == 2) {
+    height = 20;
+  } else {
+    height = 40;
+  }
+  uint8_t posDivided = (pos * divided);
+  // Horizontal line
+  display.drawLine(SPACING + posDivided, height, SPACING + divided + pos, height, SSD1306_WHITE);
+}
+
 void setup() {
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println(F("SSD1306 allocation failed"));
@@ -68,12 +86,17 @@ void setup() {
     }
   }*/
 
-  uint8_t display_width_max = 3 - SCREEN_WIDTH -4; 
-  uint8_t display_height_max = 3 - CREEN_HEIGHT - SPRITE_HEIGHT - 5;
 
+  int seqSize = sizeof(percentages) / sizeof(percentages[0]);
   // Draw simple horizontal line
-  display.drawLine(3, 3, SCREEN_WIDTH - 4, 3, SSD1306_WHITE);
-  display.drawLine(3, 3, 3, SCREEN_HEIGHT - SPRITE_HEIGHT - 5, SSD1306_WHITE);
+  //display.drawLine(3, 3, SCREEN_WIDTH - 4, 3, SSD1306_WHITE);
+  //display.drawLine(3, 3, 3, SCREEN_HEIGHT - SPRITE_HEIGHT - 5, SSD1306_WHITE);
+
+  for (int i = 0; i < seqSize; i++) {
+    drawSeq(i);
+  }
+
+
 
   // Display sprites
   displaySprite(0, 'B');
@@ -100,7 +123,7 @@ void setup() {
   displaySprite(21, '6', 3);
   displaySprite(22, '/', 3);
   char sizeArray[2];
-  convertSizeToCharArray(sizeof(percentages) / sizeof(percentages[0]), sizeArray);
+  convertSizeToCharArray(seqSize, sizeArray);
   displaySprite(23, sizeArray[0], 3);
   displaySprite(24, sizeArray[1], 3);
 
