@@ -3,9 +3,20 @@
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
+#define SPRITE_WIDTH 3
+#define SPRITE_HEIGHT 6
 #define OLED_RESET -1
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+const uint8_t spriteB[6] PROGMEM = {
+  {1, 1, 1},
+  {1, 0, 1},
+  {1, 0, 1},
+  {1, 1, 1},
+  {1, 0, 1},
+  {1, 1, 1}
+}
 
 const uint8_t pixelData[64][128] PROGMEM = {
   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -19,6 +30,9 @@ void setup() {
     for(;;);
   }
   display.clearDisplay();
+
+  // Cadre
+  display.drawRect(1, 1, SCREEN_WIDTH - 2, SCREEN_HEIGHT-9, SSD1306_WHITE);
   
   // Dessiner chaque pixel de la matrice
   for (uint8_t y = 0; y < SCREEN_HEIGHT; y++) {
@@ -28,6 +42,8 @@ void setup() {
       }
     }
   }
+
+  // écriture
 
   display.display(); // Affiche tout
 }
