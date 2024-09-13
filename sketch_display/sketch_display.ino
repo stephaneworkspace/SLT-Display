@@ -32,15 +32,19 @@ void setup() {
   display.clearDisplay();
 
   // Cadre
-  //display.drawRect(1, 1, SCREEN_WIDTH - 2, SCREEN_HEIGHT-9, SSD1306_WHITE);
+  display.drawRect(1, 1, SCREEN_WIDTH - 2, SCREEN_HEIGHT-9, SSD1306_WHITE);
   
   // écriture B en position
   for (uint8_t y = 0; y < SPRITE_HEIGHT; y++) {
     for (uint8_t x = 0; x < SPRITE_WIDTH; x++) {
       if (pgm_read_byte(&(spriteB[y][x])) == 1) {
-        display.drawPixel(x + 1, y + SCREEN_HEIGHT - SPRITE_HEIGHT - 1, SSD1306_WHITE);
+        display.drawPixel(x + 1, y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
       }
     }
+  }
+
+  for (uint8_t x = 0; x < 10; x++) {
+    displaySprite(x, 'B');
   }
 
   // Dessiner chaque pixel de la matrice
@@ -54,6 +58,16 @@ void setup() {
 
 
   display.display(); // Affiche tout
+}
+
+void displaySprite(uint8_t position, char spriteChar) {
+  for (uint8_t y = 0; y < SPRITE_HEIGHT; y++) {
+    for (uint8_t x = 0; x < SPRITE_WIDTH; x++) {
+      if (pgm_read_byte(&(spriteB[y][x])) == 1) {
+        display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
+      }
+    }
+  }
 }
 
 void loop() {
