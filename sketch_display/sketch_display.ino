@@ -135,6 +135,33 @@ const uint8_t spriteK[SPRITE_HEIGHT][SPRITE_WIDTH] PROGMEM = {
   {1, 0, 1},
 };
 
+const uint8_t spriteP[SPRITE_HEIGHT][SPRITE_WIDTH] PROGMEM = {
+  {1, 1, 1},
+  {1, 0, 1},
+  {1, 1, 1},
+  {1, 0, 0},
+  {1, 0, 0},
+  {1, 0, 0},
+};
+
+const uint8_t spriteT[SPRITE_HEIGHT][SPRITE_WIDTH] PROGMEM = {
+  {1, 1, 1},
+  {0, 1, 0},
+  {0, 1, 0},
+  {0, 1, 0},
+  {0, 1, 0},
+  {0, 1, 0},
+};
+
+const uint8_t spriteE[SPRITE_HEIGHT][SPRITE_WIDTH] PROGMEM = {
+  {1, 1, 1},
+  {1, 0, 0},
+  {1, 1, 0},
+  {1, 0, 0},
+  {1, 0, 0},
+  {1, 1, 1},
+};
+
 const uint8_t pixelData[64][128] PROGMEM = {
   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -170,6 +197,18 @@ void setup() {
   displaySprite(4, ' ');
   displaySprite(5, '0');
   displaySprite(6, '1');
+  displaySprite(7, ' ');
+  displaySprite(8, 'P');
+  displaySprite(9, 'A');
+  displaySprite(10, 'T');
+  displaySprite(11, 'T');
+  displaySprite(12, 'E');
+  displaySprite(13, 'R');
+  displaySprite(14, 'N');
+  displaySprite(15, ' ');
+  displaySprite(16, '0');
+  displaySprite(17, '0');
+  displaySprite(18, '1');
 
   // Dessiner chaque pixel de la matrice
   for (uint8_t y = 0; y < SCREEN_HEIGHT; y++) {
@@ -255,6 +294,21 @@ void displaySprite(uint8_t position, char spriteChar) {
           break;
         case 'K':
           if (pgm_read_byte(&(spriteK[y][x])) == 1) {
+            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
+          }
+          break;  
+        case 'P':
+          if (pgm_read_byte(&(spriteP[y][x])) == 1) {
+            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
+          }
+          break;  
+        case 'T':
+          if (pgm_read_byte(&(spriteT[y][x])) == 1) {
+            display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
+          }
+          break;  
+        case 'E':
+          if (pgm_read_byte(&(spriteE[y][x])) == 1) {
             display.drawPixel(x + 1 + (position * (SPRITE_WIDTH + 2)), y + SCREEN_HEIGHT - SPRITE_HEIGHT, SSD1306_WHITE);
           }
           break;  
