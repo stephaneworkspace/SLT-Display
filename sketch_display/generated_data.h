@@ -1,0 +1,16 @@
+//
+// Created by Stéphane Bressani on 14.09.2024.
+// generate_data.h
+//
+// Static Sequence, this project doesn't have to goal of do something more complex
+// I use my Ardiuno uno only for design the UI core for SSD1306
+// I want doing something more complex later on Bela mini
+//
+
+#ifndef GENERATED_DATA_H
+#define GENERATED_DATA_H
+
+// Tableau généré automatiquement à partir du fichier data.txt
+const int percentages[] = {0, 25, 50, 100, 0, 100, 0, 55, 0, 70, 0, 95, 0, 30, 0, 75};
+
+#endif // GENERATED_DATA_H
