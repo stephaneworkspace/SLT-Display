@@ -68,6 +68,13 @@ void setup() {
     }
   }*/
 
+  uint8_t display_width_max = 3 - SCREEN_WIDTH -4; 
+  uint8_t display_height_max = 3 - CREEN_HEIGHT - SPRITE_HEIGHT - 5;
+
+  // Draw simple horizontal line
+  display.drawLine(3, 3, SCREEN_WIDTH - 4, 3, SSD1306_WHITE);
+  display.drawLine(3, 3, 3, SCREEN_HEIGHT - SPRITE_HEIGHT - 5, SSD1306_WHITE);
+
   // Display sprites
   displaySprite(0, 'B');
   displaySprite(1, 'A');
