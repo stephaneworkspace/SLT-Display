@@ -48,7 +48,7 @@ void drawSeq(uint8_t pos) {
   int height = display_height_max - (percentages[pos] * display_height_max) / 100;
   uint8_t posDivided = (pos * divided);
   // Horizontal line
-  display.drawLine(SPACING + posDivided, SPACING + height, SPACING + posDivided + divided + pos, SPACING + height, SSD1306_WHITE);
+  display.drawLine(SPACING + posDivided, SPACING + height, SPACING + posDivided + divided, SPACING + height, SSD1306_WHITE);
 }
 
 void setup() {
