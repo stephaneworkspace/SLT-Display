@@ -6,6 +6,11 @@
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define SPACING 3
+// uint8_t display_width_max = SCREEN_WIDTH - 4 - 3; 
+// uint8_t display_height_max = SCREEN_HEIGHT - SPRITE_HEIGHT - 5 - 3;
+#define DISPLAY_WIDTH_MAX 121
+#define DISPLAY_HEIGHT_MAX 50
+
 #define OLED_RESET -1
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -40,18 +45,38 @@ void displaySprite(uint8_t position, char spriteChar, uint8_t offset = 0) {
   }
 }
 
-void drawSeq(uint8_t pos) {
-  int seqSize = sizeof(percentages) / sizeof(percentages[0]);
-  uint8_t display_width_max = SCREEN_WIDTH - 4 - 3; 
-  uint8_t display_height_max = SCREEN_HEIGHT - SPRITE_HEIGHT - 5 - 3;
-  uint8_t divided = display_width_max / seqSize;
-  int height = display_height_max - (percentages[pos] * display_height_max) / 100;
+void drawSeq(uint8_t pos, uint8_t offset, uint8_t divided) {
+  int height = DISPLAY_HEIGHT_MAX - (percentages[pos] * DISPLAY_HEIGHT_MAX) / 100;
   uint8_t posDivided = (pos * divided);
+  
+  if (pos == 0) {
+    Serial.print(pos);
+    Serial.print("\n");
+    Serial.print("offset: ");
+    Serial.print(offset);
+    Serial.print("\n");
+    Serial.print("divided: ");
+    Serial.print(divided);
+    Serial.print("\n");
+    Serial.print("height: ");
+    Serial.print(height);
+    Serial.print("\n");
+  }
   // Horizontal line
   display.drawLine(SPACING + posDivided, SPACING + height, SPACING + posDivided + divided, SPACING + height, SSD1306_WHITE);
 }
 
 void setup() {
+    // Initialisation de la communication série à 9600 bauds
+  Serial.begin(9600);
+  
+  // Attendre que la console soit prête (utile sur certains systèmes)
+  while (!Serial) {
+    ; // Ne rien faire tant que la connexion série n'est pas établie
+  }
+
+  Serial.print("Step Lfo Table - Display");
+
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;);
@@ -79,17 +104,15 @@ void setup() {
     }
   }*/
 
-
   int seqSize = sizeof(percentages) / sizeof(percentages[0]);
-  // Draw simple horizontal line
-  //display.drawLine(3, 3, SCREEN_WIDTH - 4, 3, SSD1306_WHITE);
-  //display.drawLine(3, 3, 3, SCREEN_HEIGHT - SPRITE_HEIGHT - 5, SSD1306_WHITE);
-
-  for (int i = 0; i < seqSize; i++) {
-    drawSeq(i);
+  uint8_t divided = DISPLAY_WIDTH_MAX / seqSize;
+  uint8_t offset = (DISPLAY_WIDTH_MAX - (divided * seqSize)) / 2;
+  if ((DISPLAY_WIDTH_MAX - (divided * seqSize)) % 2 != 0) {
+    offset++;  // Ajouter 1 si la division n'était pas exacte
   }
-
-
+  for (int i = 0; i < seqSize; i++) {
+    drawSeq(i, offset, divided);
+  }
 
   // Display sprites
   displaySprite(0, 'B');
