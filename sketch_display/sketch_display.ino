@@ -45,30 +45,29 @@ void displaySprite(uint8_t position, char spriteChar, uint8_t offset = 0) {
   }
 }
 
-void drawSeq(uint8_t pos, uint8_t offset, uint8_t divided) {
-  int seqSize = sizeof(percentages) / sizeof(percentages[0]);
-  uint8_t sizeComputed = seqSize * divided;
-  uint8_t height = DISPLAY_HEIGHT_MAX - (percentages[pos] * DISPLAY_HEIGHT_MAX) / 100;
+// Fonction qui prend un tableau de SequenceStep et l'affiche
+void printSteps(SequenceStep* steps, int size) {
+  for (int i = 0; i < size; i++) {
+    Serial.print("Step ");
+    Serial.print(i + 1);
+    Serial.print(": ");
+    Serial.print(steps[i].percentage);
+    Serial.print("% ");
+    if (steps[i].isRamp) {
+      Serial.print("ramp ");
+      Serial.print(steps[i].rampPercentage);
+      Serial.println("%");
+    } else {
+      Serial.println("no ramp");
+    }
+  }
+}
+
+
+void drawSeq(SequenceStep* steps, uint8_t pos, uint8_t offset, uint8_t divided, int count) {
+  uint8_t sizeComputed = count * divided;
+  uint8_t height = DISPLAY_HEIGHT_MAX - (steps[pos].percentage * DISPLAY_HEIGHT_MAX) / 100;
   uint8_t posDivided = (pos * divided);
-  
-  /*
-  if (pos == 0) {
-    Serial.print("\n");
-    Serial.print(pos);
-    Serial.print("\n");
-    Serial.print("sizeComputed: ");
-    Serial.print(sizeComputed);
-    Serial.print("\n");
-    Serial.print("offset: ");
-    Serial.print(offset);
-    Serial.print("\n");
-    Serial.print("divided: ");
-    Serial.print(divided);
-    Serial.print("\n");
-    Serial.print("height: ");
-    Serial.print(height);
-    Serial.print("\n");
-  }*/
 
   // Horizontal line
   display.drawLine(
@@ -80,12 +79,10 @@ void drawSeq(uint8_t pos, uint8_t offset, uint8_t divided) {
 
 
   uint8_t heightEnd = 0;
-   
-
-  if (pos < seqSize) {
-    heightEnd = DISPLAY_HEIGHT_MAX - (percentages[pos + 1] * DISPLAY_HEIGHT_MAX) / 100;
+  if (pos < count) {
+    heightEnd = DISPLAY_HEIGHT_MAX - (steps[pos + 1].percentage * DISPLAY_HEIGHT_MAX) / 100;
   } else {
-    heightEnd = DISPLAY_HEIGHT_MAX - (percentages[0] * DISPLAY_HEIGHT_MAX) / 100;
+    heightEnd = DISPLAY_HEIGHT_MAX - (steps[0].percentage * DISPLAY_HEIGHT_MAX) / 100;
   }
 
   display.drawLine(
@@ -113,6 +110,26 @@ void setup() {
   }
   display.clearDisplay();
 
+  // Calculer la taille du tableau descriptions[]
+  int count = getDescriptionCount();
+
+  // Allouer dynamiquement un tableau de SequenceStep
+  SequenceStep* steps = (SequenceStep*)malloc(count * sizeof(SequenceStep));
+
+  // Vérifier si la mémoire a bien été allouée
+  if (steps == NULL) {
+    Serial.println("Erreur d'allocation mémoire");
+    return;
+  }
+
+  // Parcourir les descriptions et remplir les séquences
+  for (int i = 0; i < count; i++) {
+    steps[i] = parseDescription(descriptions[i]);
+  }
+
+  // Appeler la fonction pour afficher les séquences
+  printSteps(steps, count);
+
   // Cadre
   display.drawRect(1, 1, SCREEN_WIDTH - 2, SCREEN_HEIGHT-9, SSD1306_WHITE);
   
@@ -134,14 +151,13 @@ void setup() {
     }
   }*/
 
-  int seqSize = sizeof(percentages) / sizeof(percentages[0]);
-  uint8_t divided = DISPLAY_WIDTH_MAX / seqSize;
-  uint8_t offset = (DISPLAY_WIDTH_MAX - (divided * seqSize)) / 2;
-  if ((DISPLAY_WIDTH_MAX - (divided * seqSize)) % 2 != 0) {
+  uint8_t divided = DISPLAY_WIDTH_MAX / count;
+  uint8_t offset = (DISPLAY_WIDTH_MAX - (divided * count)) / 2;
+  if ((DISPLAY_WIDTH_MAX - (divided * count)) % 2 != 0) {
     offset++;  // Ajouter 1 si la division n'était pas exacte
   }
-  for (int i = 0; i < seqSize; i++) {
-    drawSeq(i, offset, divided);
+  for (int i = 0; i < count; i++) {
+    drawSeq(steps, i, offset, divided, count);
   }
 
   // Display sprites
@@ -169,11 +185,14 @@ void setup() {
   displaySprite(21, '6', 3);
   displaySprite(22, '/', 3);
   char sizeArray[2];
-  convertSizeToCharArray(seqSize, sizeArray);
+  convertSizeToCharArray(count, sizeArray);
   displaySprite(23, sizeArray[0], 3);
   displaySprite(24, sizeArray[1], 3);
 
   display.display(); // Affiche tout
+
+  // Libérer la mémoire allouée
+  free(steps);
 }
 
 void loop() {
