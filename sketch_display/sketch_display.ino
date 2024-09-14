@@ -6,21 +6,14 @@
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define SPACING 3
-// uint8_t display_width_max = SCREEN_WIDTH - 4 - 3; 
-// uint8_t display_height_max = SCREEN_HEIGHT - SPRITE_HEIGHT - 5 - 3;
+// DISPLAY_WIDTH_MAX = SCREEN_WIDTH - 4 - 3; 
+// DISPLAY_HEIGHT_MAX = SCREEN_HEIGHT - SPRITE_HEIGHT - 5 - 3;
 #define DISPLAY_WIDTH_MAX 121
 #define DISPLAY_HEIGHT_MAX 50
 
 #define OLED_RESET -1
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
-
-/*const uint8_t pixelData[64][128] PROGMEM = {
-  {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  // Ajoute les autres lignes ici
-};*/
 
 void displaySprite(uint8_t position, char spriteChar, uint8_t offset = 0) {
   const uint8_t* selectedSprite = nullptr;
@@ -45,25 +38,6 @@ void displaySprite(uint8_t position, char spriteChar, uint8_t offset = 0) {
   }
 }
 
-// Fonction qui prend un tableau de SequenceStep et l'affiche
-void printSteps(SequenceStep* steps, int size) {
-  for (int i = 0; i < size; i++) {
-    Serial.print("Step ");
-    Serial.print(i + 1);
-    Serial.print(": ");
-    Serial.print(steps[i].percentage);
-    Serial.print("% ");
-    if (steps[i].isRamp) {
-      Serial.print("ramp ");
-      Serial.print(steps[i].rampPercentage);
-      Serial.println("%");
-    } else {
-      Serial.println("no ramp");
-    }
-  }
-}
-
-
 void drawSeq(SequenceStep* steps, uint8_t pos, uint8_t offset, uint8_t divided, int count) {
   uint8_t sizeComputed = count * divided;
   uint8_t height = DISPLAY_HEIGHT_MAX - (steps[pos].percentage * DISPLAY_HEIGHT_MAX) / 100;
@@ -79,7 +53,7 @@ void drawSeq(SequenceStep* steps, uint8_t pos, uint8_t offset, uint8_t divided, 
 
 
   uint8_t heightEnd = 0;
-  if (pos < count) {
+  if (pos < count - 1) {
     heightEnd = DISPLAY_HEIGHT_MAX - (steps[pos + 1].percentage * DISPLAY_HEIGHT_MAX) / 100;
   } else {
     heightEnd = DISPLAY_HEIGHT_MAX - (steps[0].percentage * DISPLAY_HEIGHT_MAX) / 100;
@@ -127,9 +101,6 @@ void setup() {
     steps[i] = parseDescription(descriptions[i]);
   }
 
-  // Appeler la fonction pour afficher les séquences
-  printSteps(steps, count);
-
   // Cadre
   display.drawRect(1, 1, SCREEN_WIDTH - 2, SCREEN_HEIGHT-9, SSD1306_WHITE);
   
@@ -141,15 +112,6 @@ void setup() {
       }
     }
   }
-
-  /*// Dessiner chaque pixel de la matrice
-  for (uint8_t y = 0; y < SCREEN_HEIGHT; y++) {
-    for (uint8_t x = 0; x < SCREEN_WIDTH; x++) {
-      if (pgm_read_byte(&(pixelData[y][x])) == 1) {
-        display.drawPixel(x, y, SSD1306_WHITE);
-      }
-    }
-  }*/
 
   uint8_t divided = DISPLAY_WIDTH_MAX / count;
   uint8_t offset = (DISPLAY_WIDTH_MAX - (divided * count)) / 2;
