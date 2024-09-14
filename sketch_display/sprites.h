@@ -46,7 +46,7 @@ const uint8_t sprite3[SPRITE_HEIGHT][SPRITE_WIDTH] PROGMEM = {
         {1, 1, 1},
 };
 const uint8_t sprite4[SPRITE_HEIGHT][SPRITE_WIDTH] PROGMEM = {
-        {0, 0, 1},
+        {0, 1, 0},
         {0, 1, 0},
         {1, 0, 0},
         {1, 1, 1},
