@@ -46,11 +46,18 @@ void displaySprite(uint8_t position, char spriteChar, uint8_t offset = 0) {
 }
 
 void drawSeq(uint8_t pos, uint8_t offset, uint8_t divided) {
+  int seqSize = sizeof(percentages) / sizeof(percentages[0]);
+  uint8_t sizeComputed = seqSize * divided;
   int height = DISPLAY_HEIGHT_MAX - (percentages[pos] * DISPLAY_HEIGHT_MAX) / 100;
   uint8_t posDivided = (pos * divided);
   
+  /*
   if (pos == 0) {
+    Serial.print("\n");
     Serial.print(pos);
+    Serial.print("\n");
+    Serial.print("sizeComputed: ");
+    Serial.print(sizeComputed);
     Serial.print("\n");
     Serial.print("offset: ");
     Serial.print(offset);
@@ -61,9 +68,15 @@ void drawSeq(uint8_t pos, uint8_t offset, uint8_t divided) {
     Serial.print("height: ");
     Serial.print(height);
     Serial.print("\n");
-  }
+  }*/
+  
   // Horizontal line
-  display.drawLine(SPACING + posDivided, SPACING + height, SPACING + posDivided + divided, SPACING + height, SSD1306_WHITE);
+  display.drawLine(
+    SPACING + offset + posDivided, 
+    SPACING + height, 
+    SPACING + offset + posDivided + divided, 
+    SPACING + height, 
+    SSD1306_WHITE);
 }
 
 void setup() {
