@@ -43,28 +43,36 @@ void drawSeq(SequenceStep* steps, uint8_t pos, uint8_t offset, uint8_t divided, 
   uint8_t height = DISPLAY_HEIGHT_MAX - (steps[pos].percentage * DISPLAY_HEIGHT_MAX) / 100;
   uint8_t posDivided = (pos * divided);
 
-  // Horizontal line
-  display.drawLine(
-    SPACING + offset + posDivided, 
-    SPACING + height, 
-    SPACING + offset + posDivided + divided, 
-    SPACING + height, 
-    SSD1306_WHITE);
-
-
   uint8_t heightEnd = 0;
   if (pos < count - 1) {
     heightEnd = DISPLAY_HEIGHT_MAX - (steps[pos + 1].percentage * DISPLAY_HEIGHT_MAX) / 100;
   } else {
     heightEnd = DISPLAY_HEIGHT_MAX - (steps[0].percentage * DISPLAY_HEIGHT_MAX) / 100;
   }
-
-  display.drawLine(
-    SPACING + offset + posDivided + divided, 
-    SPACING + height, 
-    SPACING + offset + posDivided + divided, 
-    SPACING + heightEnd, 
-    SSD1306_WHITE);
+  if (steps[pos].isRamp) {
+    // Ramp 0%
+    display.drawLine(
+      SPACING + offset + posDivided, 
+      SPACING + height, 
+      SPACING + offset + posDivided + divided, 
+      SPACING + heightEnd, 
+      SSD1306_WHITE);
+  } else {
+    // Horizontal line
+    display.drawLine(
+      SPACING + offset + posDivided, 
+      SPACING + height, 
+      SPACING + offset + posDivided + divided, 
+      SPACING + height, 
+      SSD1306_WHITE);
+    // Vertical line
+    display.drawLine(
+      SPACING + offset + posDivided + divided, 
+      SPACING + height, 
+      SPACING + offset + posDivided + divided, 
+      SPACING + heightEnd, 
+      SSD1306_WHITE);
+  }
 }
 
 void setup() {
