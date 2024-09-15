@@ -15,6 +15,10 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
+const int buttonPin = A2;  // Le bouton est connecté à la broche A2
+int buttonState = 0;       // Variable pour stocker l'état du bouton
+int currentValue = 1;
+
 void displaySprite(uint8_t position, char spriteChar, uint8_t offset = 0) {
   const uint8_t* selectedSprite = nullptr;
 
@@ -50,13 +54,46 @@ void drawSeq(SequenceStep* steps, uint8_t pos, uint8_t offset, uint8_t divided, 
     heightEnd = DISPLAY_HEIGHT_MAX - (steps[0].percentage * DISPLAY_HEIGHT_MAX) / 100;
   }
   if (steps[pos].isRamp) {
-    // Ramp 0%
-    display.drawLine(
-      SPACING + offset + posDivided, 
-      SPACING + height, 
-      SPACING + offset + posDivided + divided, 
-      SPACING + heightEnd, 
-      SSD1306_WHITE);
+    if (steps[pos].rampPercentage == 0) {
+      // Ramp 0%
+      display.drawLine(
+        SPACING + offset + posDivided, 
+        SPACING + height, 
+        SPACING + offset + posDivided + divided, 
+        SPACING + heightEnd, 
+        SSD1306_WHITE);
+    } else {
+      // Dessiner une courbe en fonction de rampPercentage (entre -100 et 100)
+      int numSegments = 10; // Plus de segments pour une courbe plus lisse
+      float rampFactor = steps[pos].rampPercentage / 100.0;
+      
+      // Limiter le rampFactor à l'intérieur des bornes (-1, 1)
+      if (rampFactor < -1.0) rampFactor = -1.0;
+      if (rampFactor > 1.0) rampFactor = 1.0;
+
+      for (int i = 0; i < numSegments; i++) {
+        float t = (float)i / (float)numSegments;
+        float invT = 1 - t;
+
+        // Calculer les coordonnées du point de départ (x1, y1) et du point suivant (x2, y2)
+        uint8_t x1 = SPACING + offset + posDivided + t * divided;
+        uint8_t y1 = SPACING + (height * invT + heightEnd * t + (10 *rampFactor) * sin(t * M_PI)); // Ajustement de la hauteur avec une courbe sinusoïdale
+
+        float tNext = (float)(i + 1) / (float)numSegments;
+        uint8_t x2 = SPACING + offset + posDivided + tNext * divided;
+        uint8_t y2 = SPACING + (height * (1 - tNext) + heightEnd * tNext + (10 * rampFactor) * sin(tNext * M_PI));
+
+      // Sécurité pour ne pas dessiner en dessous du pixel 3 sur l'axe y
+      if (y1 < SPACING) y1 = SPACING;
+      if (y2 < SPACING) y2 = SPACING;
+
+        // Dessiner un segment de ligne entre les deux points
+        display.drawLine(x1, y1, x2, y2, SSD1306_WHITE);
+
+        // Ajouter un léger délai pour ne pas surcharger le système
+        delay(10);
+      }
+    }
   } else {
     // Horizontal line
     display.drawLine(
@@ -75,21 +112,7 @@ void drawSeq(SequenceStep* steps, uint8_t pos, uint8_t offset, uint8_t divided, 
   }
 }
 
-void setup() {
-    // Initialisation de la communication série à 9600 bauds
-  Serial.begin(9600);
-  
-  // Attendre que la console soit prête (utile sur certains systèmes)
-  while (!Serial) {
-    ; // Ne rien faire tant que la connexion série n'est pas établie
-  }
-
-  Serial.print("Step Lfo Table - Display");
-
-  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;);
-  }
+int ui() {
   display.clearDisplay();
 
   // Calculer la taille du tableau descriptions[]
@@ -151,8 +174,14 @@ void setup() {
   displaySprite(17, '0');
   displaySprite(18, '1');
   displaySprite(19, ' ');
-  displaySprite(20, '1', 3);
-  displaySprite(21, '6', 3);
+   // Convertir `currentValue` en chaîne de caractères
+  char incrementedValue[3];
+  sprintf(incrementedValue, "%02d", currentValue);  // Assure que le nombre est affiché sur 2 chiffres
+  // Afficher les deux parties du nombre
+  displaySprite(20, incrementedValue[0], 3);  // Dizaine
+  displaySprite(21, incrementedValue[1], 3);  // Unité
+  //displaySprite(20, '1', 3);
+  //displaySprite(21, '6', 3);
   displaySprite(22, '/', 3);
   char sizeArray[2];
   convertSizeToCharArray(count, sizeArray);
@@ -160,11 +189,56 @@ void setup() {
   displaySprite(24, sizeArray[1], 3);
 
   display.display(); // Affiche tout
-
   // Libérer la mémoire allouée
   free(steps);
+  // pour loop() avec switch basic
+  return count;
 }
 
+void setup() {
+  // Configure la broche A2 comme entrée avec pull-up interne
+  pinMode(buttonPin, INPUT_PULLUP);
+
+  // Initialisation de la communication série à 9600 bauds
+  Serial.begin(9600);
+
+  // Attendre que la console soit prête (utile sur certains systèmes)
+  while (!Serial) {
+    ; // Ne rien faire tant que la connexion série n'est pas établie
+  }
+
+  Serial.print("Step Lfo Table - Display");
+
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+  }
+  
+  ui();
+}
+
+//unsigned long previousMillis = 0;  // Variable pour stocker le dernier moment où le bouton a été pressé
+//const long interval = 1000;        // Intervalle de 2 secondes
+
 void loop() {
-  // Rien à faire ici
+  /*buttonState = digitalRead(buttonPin);
+  
+  // Obtenir le temps actuel
+  unsigned long currentMillis = millis();
+
+  // Appelle la fonction ui() pour mettre à jour l'affichage
+  int count = ui();
+
+  // Vérifier si le bouton est pressé et si suffisamment de temps s'est écoulé depuis la dernière incrémentation
+  if (buttonState == LOW && currentMillis - previousMillis >= interval) {
+    currentValue++;  // Incrémenter `currentValue`
+    
+    // Si `currentValue` dépasse `count`, réinitialiser à 01
+    if (currentValue > count) {
+      currentValue = 1; // Remet à 01
+    }
+
+    // Mettre à jour le dernier moment où l'incrémentation a eu lieu
+    previousMillis = currentMillis;
+  }*/
 }
