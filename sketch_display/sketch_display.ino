@@ -83,9 +83,9 @@ void drawSeq(SequenceStep* steps, uint8_t pos, uint8_t offset, uint8_t divided, 
         uint8_t x2 = SPACING + offset + posDivided + tNext * divided;
         uint8_t y2 = SPACING + (height * (1 - tNext) + heightEnd * tNext + (10 * rampFactor) * sin(tNext * M_PI));
 
-      // Sécurité pour ne pas dessiner en dessous du pixel 3 sur l'axe y
-      if (y1 < SPACING) y1 = SPACING;
-      if (y2 < SPACING) y2 = SPACING;
+        // Sécurité pour ne pas dessiner en dessous du pixel 3 sur l'axe y
+        if (y1 < SPACING) y1 = SPACING;
+        if (y2 < SPACING) y2 = SPACING;
 
         // Dessiner un segment de ligne entre les deux points
         display.drawLine(x1, y1, x2, y2, SSD1306_WHITE);
